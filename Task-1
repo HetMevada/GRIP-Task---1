@@ -1,0 +1,62 @@
+##GRIP Task - 1, to predict percentage of an student based on number of study hours.
+
+##Author: Het Mevada
+
+#Importing libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+#Data fetching from link
+url = "https://raw.githubusercontent.com/AdiPersonalWorks/Random/master/student_scores%20-%20student_scores.csv"
+data = pd.read_csv(url)
+print("Data imported successfully")
+
+data.head(15)
+
+data.info()
+As we can see, there are no null values and data is of float and int type. Hence we don't require any data preprocessing.
+
+#Let us visualize data as it has only two variables.
+
+
+data.plot(x='Hours', y='Scores', style='o')  
+plt.title('Hours vs Percentage')  
+plt.xlabel('Hours Studied')  
+plt.ylabel('Percentage Score')  
+plt.show()
+
+#Data Preparation
+X = data.iloc[:, :-1].values   #Attributes
+y = data.iloc[:, 1].values     #Output
+
+from sklearn.model_selection import train_test_split  
+X_train, X_test, y_train, y_test = train_test_split(X, y, 
+                            test_size=0.2, random_state=0)
+                            
+from sklearn.linear_model import LinearRegression 
+
+reg = LinearRegression()  
+reg.fit(X_train, y_train)
+
+#Plotting the regression line
+line = reg.coef_*X + reg.intercept_
+
+#Plotting for the test data
+plt.scatter(X, y)
+plt.plot(X, line);
+plt.show()
+
+print(X_test) 
+y_pred = reg.predict(X_test) # Predicting the scores 
+
+#Actual vs Predicted
+df = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})  
+df from sklearn import metrics  
+print('Mean Absolute Error:',  #mean abosulte error of model
+      metrics.mean_absolute_error(y_test, y_pred)) 
+      
+hrs = 9.25
+pred_hrs = reg.predict([[hrs]])
+print("No of Hours = {}".format(hrs))
+print("Predicted Score = {}".format(pred_hrs[0]))
